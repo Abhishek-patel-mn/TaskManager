@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.abhi.atm</groupId>
+		<version>0.1</version>
+		<artifactId>atm</artifactId>
+	</parent>
+	<groupId>com.abhi.atm.service</groupId>
+	<artifactId>atm-service</artifactId>
+	<packaging>jar</packaging>
+	<name>atm-service</name>
+
+	<dependencies>
+
+		<!-- DTO Dependency -->
+		<dependency>
+			<groupId>com.abhi.atm.dao</groupId>
+			<artifactId>atm-dao</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- DTO Dependency -->
+		<dependency>
+			<groupId>com.abhi.atm.spec</groupId>
+			<artifactId>atm-spec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.abhi.atm.common</groupId>
+			<artifactId>atm-common</artifactId>
+			<version>0.1</version>
+		</dependency>
+		
+	</dependencies>
+
+</project>

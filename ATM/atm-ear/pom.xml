@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.abhi.atm</groupId>
+		<version>0.1</version>
+		<artifactId>atm</artifactId>
+	</parent>
+	<groupId>com.abhi.atm.ear</groupId>
+	<artifactId>atm-ear</artifactId>
+	<packaging>ear</packaging>
+	<name>atm-ear</name>
+
+	<dependencies>
+
+		<!-- service layer dependency -->
+		<dependency>
+			<groupId>com.abhi.atm.web</groupId>
+			<artifactId>atm-web</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>atm</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<modules>
+						<webModule>
+							<groupId>com.abhi.atm.web</groupId>
+							<artifactId>atm-web</artifactId>
+							<contextRoot>/atm</contextRoot>
+						</webModule>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
