@@ -2,7 +2,8 @@
 <head></head>
 
 <body>
-hi welcome
+Hi welcome
+<a href="/logout">Logout</a>
 </body>
 
 </html>
