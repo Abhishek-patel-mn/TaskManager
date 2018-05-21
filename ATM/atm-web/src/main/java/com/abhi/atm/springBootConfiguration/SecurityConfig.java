@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Abhishek Patel M N
@@ -19,7 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
 	@Autowired
 	UserDetailsService customUserDetailsService;
@@ -41,9 +43,7 @@ public class SecurityConfig {
 	@Order(1)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		protected void configure(HttpSecurity http) throws Exception {
-			http
-					.antMatcher("/api/**")
-					.authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
+			http.antMatcher("/api/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
 					.and().httpBasic()
 					.and().csrf().disable();
 		}
@@ -56,11 +56,21 @@ public class SecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/secured/**").hasAnyRole("ADMIN")
+			http.authorizeRequests()
+					.antMatchers("/registerUser/**").permitAll()
+					.antMatchers("/secured/**").hasAnyRole("ADMIN")
 					.anyRequest().hasAnyRole("ADMIN", "USER")
-					.and().formLogin().and().logout().permitAll().logoutSuccessUrl("/login")
+					.anyRequest().fullyAuthenticated()
+					.and().formLogin().loginPage("/login").defaultSuccessUrl("/dashboard").failureUrl("/login")
+					.and().logout().permitAll().logoutSuccessUrl("/login")
 					.and().csrf().disable();
 		}
 	}
 
+	// Mapping spring security url to views.
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/login").setViewName("index.html");
+		registry.addViewController("/dashboard").setViewName("dashboard.html");
+	}
 }
