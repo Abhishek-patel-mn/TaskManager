@@ -1,6 +1,5 @@
 package com.abhi.atm.controller.registrationController;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
