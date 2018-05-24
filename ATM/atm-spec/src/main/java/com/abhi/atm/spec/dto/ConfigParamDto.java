@@ -2,12 +2,16 @@ package com.abhi.atm.spec.dto;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 public class ConfigParamDto {
 
 	private int paramId;
 
+	@NotNull
 	private String paramName;
 
+	@NotNull
 	private List<ConfigParamValueDto> paramValues;
 
 	public int getParamId() {

@@ -45,8 +45,12 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 			if (StringUtils.isEmpty(user.getPassword()))
 				throw new BusinessServiceException("password is empty..");
 
-			if (user.getRole().getRoleName() == null)
+			if (user.getRole() != null) {
+				if (user.getRole().getRoleName() == null)
+					throw new BusinessServiceException("You can not create user without role..");
+			} else {
 				throw new BusinessServiceException("You can not create user without role..");
+			}
 
 			List<User> users = userRepository.findAll();
 
@@ -57,14 +61,14 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 			// Checking role.
 			ConfigParam configParam = configParamRepository.findByParamName("USER_ROLES");
-			if(configParam == null)
+			if (configParam == null)
 				throw new BusinessServiceException("USER_ROLES does not exists..");
-			
-			List<ConfigParamValue> availableRolesList = configParam.getParamValues(); 
-					
-			if(availableRolesList.size() < 1)
+
+			List<ConfigParamValue> availableRolesList = configParam.getParamValues();
+
+			if (availableRolesList.size() < 1)
 				throw new BusinessServiceException("Please create a role first...");
-			
+
 			Boolean roleMatch = availableRolesList.stream()
 					.anyMatch(r -> user.getRole().getRoleName().equals(r.getParamValue()));
 
@@ -97,14 +101,16 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Override
 	public UserDto getUserByUserId(Integer userId) throws BusinessServiceException, DataAccessException {
-		/*User user = userRepository.findOne(userId);
-		return modelMapper.map(user, UserDto.class);*/
+		/*
+		 * User user = userRepository.findOne(userId); return modelMapper.map(user,
+		 * UserDto.class);
+		 */
 		return null;
 	}
 
 	@Override
 	public void deleteUser(Integer userId) throws BusinessServiceException, DataAccessException {
-		//userRepository.delete(userId);
+		// userRepository.delete(userId);
 	}
 
 	@Override

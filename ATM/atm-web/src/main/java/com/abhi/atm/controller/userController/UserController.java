@@ -2,6 +2,8 @@ package com.abhi.atm.controller.userController;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,21 +31,21 @@ public class UserController {
 	UserMgmtService userMgmtService;
 
 	@PostMapping(value = "/secured/users")
-	public ResponseEntity<String> addUser(@RequestBody User user) {
+	public ResponseEntity<String> addUser(@Valid @RequestBody User user) {
 		JSONObject jsonResponse = new JSONObject();
 		String data = "";
 		try {
 			userMgmtService.addUser(user);
 			data = "User " + user.getUserName() + " added successfully";
 			jsonResponse.put("data", data);
-			return new ResponseEntity<String>(data.toString(), HttpStatus.OK);
+			return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
 		} catch (Exception e) {
 			jsonResponse.put("data", e.getMessage());
 			return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@GetMapping(value = { "/secured/users", "/api/users" })
+	@GetMapping(value = { "/secured/users", "/rest/users" })
 	public ResponseEntity<String> getAllUsers() {
 		JSONObject jsonResponse = new JSONObject();
 		try {
@@ -56,8 +58,8 @@ public class UserController {
 		}
 	}
 
-	@GetMapping(value = { "/secured/users/{userId}", "/api/users/{userId}" })
-	public ResponseEntity<String> getUserByUserId(@PathVariable(name = "userId") Integer userId) {
+	@GetMapping(value = { "/secured/users/{userId}", "/rest/users/{userId}" })
+	public ResponseEntity<String> getUserByUserId(@Valid @PathVariable(name = "userId") Integer userId) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			UserDto user = userMgmtService.getUserByUserId(userId);
@@ -70,7 +72,7 @@ public class UserController {
 	}
 
 	@DeleteMapping(value = "/secured/users/{userId}")
-	public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Integer userId) {
+	public ResponseEntity<String> deleteUser(@Valid @PathVariable(name = "userId") Integer userId) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			userMgmtService.deleteUser(userId);
@@ -83,7 +85,7 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/secured/users/{userId}")
-	public ResponseEntity<String> updateUser(@PathVariable(name = "userId") Integer userId, @RequestBody User user) {
+	public ResponseEntity<String> updateUser(@Valid @PathVariable(name = "userId") Integer userId, @RequestBody User user) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			user.setUserId(userId);

@@ -1,5 +1,8 @@
 package com.abhi.atm.springBootConfiguration;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -42,4 +45,9 @@ public class Application extends SpringBootServletInitializer {
 		return new ModelMapper();
 	}
 
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		servletContext.addListener(new SessionListener());
+	}
 }

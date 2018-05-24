@@ -1,5 +1,7 @@
 package com.abhi.atm.springBootConfiguration;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,7 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AtmSecurityConfig implements WebMvcConfigurer {
+public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 
 	private static String REALM = "MY_ATM_REALM";
 
@@ -47,17 +51,16 @@ public class AtmSecurityConfig implements WebMvcConfigurer {
 	@Configuration
 	@Order(1)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+		@Autowired
+		CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
+
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/api/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
-					.and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
+			http.antMatcher("/rest/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
+					.and().httpBasic().realmName(REALM).authenticationEntryPoint(customBasicAuthenticationEntryPoint)
 					.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 					.and().logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
 					.and().csrf().disable();
-		}
-
-		@Bean
-		public CustomBasicAuthenticationEntryPoint getBasicAuthEntryPoint() {
-			return new CustomBasicAuthenticationEntryPoint();
 		}
 
 		// To allow Pre-flight [OPTIONS] request from browser
@@ -72,16 +75,29 @@ public class AtmSecurityConfig implements WebMvcConfigurer {
 	@Order(2)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
+		@Autowired
+		DataSource dataSource;
+
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
+			
 			http.authorizeRequests()
 					.antMatchers("/registerUser/**").permitAll()
 					.antMatchers("/secured/**").hasAnyRole("ADMIN")
 					.anyRequest().hasAnyRole("ADMIN", "USER")
 					.anyRequest().fullyAuthenticated()
 					.and().formLogin().loginPage("/login").defaultSuccessUrl("/dashboard").failureUrl("/login")
-					.and().logout().permitAll().logoutSuccessUrl("/login").deleteCookies("JSESSIONID")
+					.and().logout().permitAll().logoutSuccessUrl("/login").deleteCookies("JSESSIONID").invalidateHttpSession(true)
+					.and().sessionManagement().invalidSessionUrl("/login")
+					.and().rememberMe().tokenRepository(persistentTokenRepository())
 					.and().csrf().disable();
+		}
+
+		@Bean
+		public PersistentTokenRepository persistentTokenRepository() {
+			JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
+			db.setDataSource(dataSource);
+			return db;
 		}
 	}
 

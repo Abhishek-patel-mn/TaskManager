@@ -2,6 +2,8 @@ package com.abhi.atm.controller.configContorller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class ConfigController {
 	ConfigParamMgmtService configParamMgmtService;
 
 	@PostMapping(value = "/secured/configParam")
-	public ResponseEntity<String> addConfigParam(@RequestBody ConfigParamDto configParamDto) {
+	public ResponseEntity<String> addConfigParam(@Valid @RequestBody ConfigParamDto configParamDto) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			configParamMgmtService.addConfigParam(configParamDto);
@@ -37,7 +39,7 @@ public class ConfigController {
 		}
 	}
 
-	@GetMapping(value = { "/secured/configParam", "/api/configParam" })
+	@GetMapping(value = { "/secured/configParam", "/rest/configParam" })
 	public ResponseEntity<String> getAllConfigParams() {
 		JSONObject jsonResponse = new JSONObject();
 		try {
@@ -51,7 +53,7 @@ public class ConfigController {
 	}
 
 	@PutMapping(value = "/secured/configParam/{paramId}")
-	public ResponseEntity<String> updateConfigParam(@RequestBody ConfigParamDto configParamDto,
+	public ResponseEntity<String> updateConfigParam(@Valid @RequestBody ConfigParamDto configParamDto,
 			@PathVariable(name = "paramId") Integer paramId) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
@@ -66,7 +68,7 @@ public class ConfigController {
 	}
 
 	@DeleteMapping(value = "/secured/configParam/{configParamId}")
-	public ResponseEntity<String> deleteConfigParam(@PathVariable int configParamId) {
+	public ResponseEntity<String> deleteConfigParam(@Valid @PathVariable int configParamId) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			configParamMgmtService.deleteConfigParam(configParamId);
@@ -78,8 +80,8 @@ public class ConfigController {
 		}
 	}
 
-	@GetMapping(value = { "/secured/configParam/{configParamId}", "/secured/configParam/{configparamId}" })
-	public ResponseEntity<String> getConfigParamByConfigParamId(@PathVariable int configParamId) {
+	@GetMapping(value = { "/secured/configParam/{configParamId}", "/rest/configParam/{configparamId}" })
+	public ResponseEntity<String> getConfigParamByConfigParamId(@Valid @PathVariable int configParamId) {
 		JSONObject jsonResponse = new JSONObject();
 		try {
 			ConfigParamDto configParam = configParamMgmtService.getConfigParamByConfigParamId(configParamId);

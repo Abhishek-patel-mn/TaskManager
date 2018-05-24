@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Abhishek Patel M N
@@ -46,9 +47,11 @@ public class User {
 	@Column(name = "user_id")
 	private int userId;
 	
+	@NotNull
 	@Column(name = "user_name")
 	private String userName;
 	
+	@NotNull
 	@Column(name = "password", length = 100)
 	private String password;
 	
@@ -61,6 +64,7 @@ public class User {
 	@Column(name = "created_date")
 	private Date createdDate;
 	
+	@NotNull
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "role_id")
 	private Role role;
