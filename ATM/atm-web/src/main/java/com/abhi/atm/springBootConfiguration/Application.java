@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * @author Abhishek Patel M N Jan 18, 2018
@@ -33,6 +34,7 @@ public class Application extends SpringBootServletInitializer {
 		return application.sources(Application.class);
 	}
 
+	// Main method
 	public static void main(String[] args) {
 		System.out.println("======== inside Mian method ==========");
 		SpringApplication.run(Application.class, args);
@@ -45,9 +47,16 @@ public class Application extends SpringBootServletInitializer {
 		return new ModelMapper();
 	}
 
+	// Session listner for create and delete
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
 		servletContext.addListener(new SessionListener());
 	}
+	
+	// Password encryptor and decryptor.
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	};
 }

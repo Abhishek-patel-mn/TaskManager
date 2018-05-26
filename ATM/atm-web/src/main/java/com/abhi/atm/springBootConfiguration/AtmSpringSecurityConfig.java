@@ -35,32 +35,31 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 	@Autowired
 	UserDetailsService customUserDetailsService;
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	};
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	// Spring security database authentication using customUserDetailsService.
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		System.out.println("SPRING SECURITY==========>>>> AUTHENTICATION");
-		auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
 
-	// Basic http based STATE LESS authentication and authorization for REST API.
+	// Basic http based STATE LESS authentication and authorization for admin REST
+	// API.
 	@Configuration
 	@Order(1)
-	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+	public static class AdminApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
 		@Autowired
-		CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
+		RestBasicAuthenticationEntryPoint restBasicAuthenticationEntryPoint;
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/rest/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
-					.and().httpBasic().realmName(REALM).authenticationEntryPoint(customBasicAuthenticationEntryPoint)
+			http.csrf().disable()
+					.antMatcher("/adminRest/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN")
+					.and().httpBasic().realmName(REALM).authenticationEntryPoint(restBasicAuthenticationEntryPoint)
 					.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-					.and().logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
-					.and().csrf().disable();
+					.and().logout().deleteCookies("JSESSIONID").invalidateHttpSession(true);
 		}
 
 		// To allow Pre-flight [OPTIONS] request from browser
@@ -70,9 +69,33 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 		}
 	}
 
-	// Form based authentication and authorization for web app.
+	// Basic http based STATE LESS authentication and authorization for user REST
+	// API.
 	@Configuration
 	@Order(2)
+	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+		@Autowired
+		RestBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
+
+		protected void configure(HttpSecurity http) throws Exception {
+			http.csrf().disable()
+					.antMatcher("/rest/**").authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
+					.and().httpBasic().realmName(REALM).authenticationEntryPoint(customBasicAuthenticationEntryPoint)
+					.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and().logout().deleteCookies("JSESSIONID").invalidateHttpSession(true);
+		}
+
+		// To allow Pre-flight [OPTIONS] request from browser
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+		}
+	}
+
+	// Form based STATE FULL authentication and authorization for web app.
+	@Configuration
+	@Order(3)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
 		@Autowired
@@ -80,19 +103,19 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			
-			http.authorizeRequests()
+
+			http.csrf().disable()
+					.authorizeRequests()
 					.antMatchers("/registerUser/**").permitAll()
 					.antMatchers("/secured/**").hasAnyRole("ADMIN")
 					.anyRequest().hasAnyRole("ADMIN", "USER")
 					.anyRequest().fullyAuthenticated()
-					.and().formLogin().loginPage("/login").defaultSuccessUrl("/dashboard").failureUrl("/login")
-					.and().logout().permitAll().logoutSuccessUrl("/login").deleteCookies("JSESSIONID").invalidateHttpSession(true)
-					.and().sessionManagement().invalidSessionUrl("/login")
-					.and().rememberMe().tokenRepository(persistentTokenRepository())
-					.and().csrf().disable();
+					.and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/dashboard").failureUrl("/login")
+					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true)
+					.and().rememberMe().tokenRepository(persistentTokenRepository());
 		}
 
+		// Bean to store remember-me token in DB.
 		@Bean
 		public PersistentTokenRepository persistentTokenRepository() {
 			JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();

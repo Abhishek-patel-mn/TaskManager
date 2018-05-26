@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 import org.springframework.stereotype.Component;
  
 @Component
-public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+public class RestBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
  
     @Override
     public void commence(final HttpServletRequest request, 

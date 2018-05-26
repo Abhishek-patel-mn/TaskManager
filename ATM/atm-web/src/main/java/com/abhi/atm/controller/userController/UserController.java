@@ -30,7 +30,7 @@ public class UserController {
 	@Autowired
 	UserMgmtService userMgmtService;
 
-	@PostMapping(value = "/secured/users")
+	@PostMapping(value = { "/secured/users", "/adminRest/users" })
 	public ResponseEntity<String> addUser(@Valid @RequestBody User user) {
 		JSONObject jsonResponse = new JSONObject();
 		String data = "";

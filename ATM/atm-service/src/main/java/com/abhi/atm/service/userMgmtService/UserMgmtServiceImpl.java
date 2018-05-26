@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.abhi.atm.common.exception.BusinessServiceException;
@@ -32,6 +33,9 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public void addUser(User user) throws BusinessServiceException, DataAccessException {
@@ -83,6 +87,9 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 			// Updating user and roles date, saving both user and role.
 			user.setCreatedDate(new Date());
 			user.getRole().setCreatedDate(new Date());
+			
+			// Encoding password.
+			user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 			userRepository.save(user);
 		} catch (Exception e) {
 			throw new BusinessServiceException(e.getMessage());

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.abhi.atm.dao.entity.CustomUserDetails;
@@ -24,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 		Optional<User> users = userRepository.findByUserName(userName);
 		users.orElseThrow(() -> new UsernameNotFoundException("User " + userName + " not found.."));
 		CustomUserDetails user = users.map(CustomUserDetails::new).get();
-		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		return user;
 	}
 
