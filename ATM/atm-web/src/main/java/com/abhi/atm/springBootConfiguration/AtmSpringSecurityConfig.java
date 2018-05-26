@@ -111,17 +111,9 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 					.anyRequest().hasAnyRole("ADMIN", "USER")
 					.anyRequest().fullyAuthenticated()
 					.and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/dashboard").failureUrl("/login")
-					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true)
-					.and().rememberMe().tokenRepository(persistentTokenRepository());
+					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true);
 		}
 
-		// Bean to store remember-me token in DB.
-		@Bean
-		public PersistentTokenRepository persistentTokenRepository() {
-			JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
-			db.setDataSource(dataSource);
-			return db;
-		}
 	}
 
 	// Mapping spring security url to views.
