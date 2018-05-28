@@ -1,28 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router'
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const appRoutes = [
 	{ path: 'login', component: LoginComponent },
-	{ path: 'register', component: RegisterComponent }
+	{ path: 'register', component: RegisterComponent },
+	{ path: 'dashboard', component: DashboardComponent }
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
-	RouterModule.forRoot(appRoutes)
+	RouterModule.forRoot(appRoutes, {useHash: true})
   ],
-  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
+  providers: [],
   bootstrap: [
 	AppComponent
   ]

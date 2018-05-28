@@ -128,7 +128,7 @@
 					<workingDirectory>angular</workingDirectory>
 				</configuration>
 				<executions>
-	<!-- It will install nodejs and npm -->
+					<!-- It will install nodejs and npm -->
 					<execution>
 						<id>install node and npm</id>
 						<goals>

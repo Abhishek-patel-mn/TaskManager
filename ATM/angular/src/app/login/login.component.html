@@ -2,12 +2,12 @@
 	<div class="row">
 		ATM LOGIN FORM
 	</div>
-	<form>
+	<form action="#/login" method="POST">
 		<div class="row">
-			Username: <input type="text" class="form-control input-sm" />
+			Username: <input type="text" name="username" class="form-control input-sm" />
 		</div>
 		<div class="row">
-			Password: <input type="password" class="form-control input-sm" />
+			Password: <input type="password" name="password" class="form-control input-sm" />
 		</div>
 		<div class="row">
 			<button class="btn btn-success">Log in</button> <a routerLink="/"><button class="btn btn-danger">Cancel</button></a>
