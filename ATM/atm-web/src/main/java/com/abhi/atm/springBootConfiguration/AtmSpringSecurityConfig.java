@@ -3,7 +3,6 @@ package com.abhi.atm.springBootConfiguration;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -16,9 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -109,17 +105,12 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 					.antMatchers("/registerUser/**").permitAll()
 					.antMatchers("/secured/**").hasAnyRole("ADMIN")
 					.anyRequest().hasAnyRole("ADMIN", "USER")
-					.anyRequest().fullyAuthenticated()
-					.and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/dashboard").failureUrl("/login")
+					.anyRequest().permitAll()
+					.and().formLogin().loginPage("/").permitAll().defaultSuccessUrl("/dashboard").failureUrl("/")
 					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true);
+
 		}
 
 	}
 
-	// Mapping spring security url to views.
-	@Override
-	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/login").setViewName("index.html");
-		registry.addViewController("/dashboard").setViewName("dashboard.html");
-	}
 }
