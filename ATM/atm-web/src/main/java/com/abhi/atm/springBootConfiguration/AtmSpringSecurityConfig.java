@@ -1,9 +1,6 @@
 package com.abhi.atm.springBootConfiguration;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -16,8 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -45,8 +40,7 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 		auth.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
 
-	// Basic http based STATE LESS authentication and authorization for admin REST
-	// API.
+	// Basic http based STATE LESS authentication and authorization for admin REST API.
 	@Configuration
 	@Order(1)
 	public static class AdminApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -69,8 +63,7 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 		}
 	}
 
-	// Basic http based STATE LESS authentication and authorization for user REST
-	// API.
+	// Basic http based STATE LESS authentication and authorization for user REST API.
 	@Configuration
 	@Order(2)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -97,9 +90,6 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 	@Configuration
 	@Order(3)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-
-		@Autowired
-		DataSource dataSource;
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
