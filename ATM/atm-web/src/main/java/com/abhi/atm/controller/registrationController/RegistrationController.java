@@ -47,7 +47,7 @@ public class RegistrationController {
 			userMgmtService.addUser(user);
 			data = "User " + user.getUserName() + " registered successfully";
 			jsonResponse.put("data", data);
-			return new ResponseEntity<String>(data.toString(), HttpStatus.OK);
+			return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
 		} catch (Exception e) {
 			jsonResponse.put("data", e.getMessage());
 			return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.INTERNAL_SERVER_ERROR);

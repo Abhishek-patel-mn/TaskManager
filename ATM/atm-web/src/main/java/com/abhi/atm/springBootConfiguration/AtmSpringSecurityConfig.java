@@ -98,10 +98,10 @@ public class AtmSpringSecurityConfig implements WebMvcConfigurer {
 					.authorizeRequests()
 					.antMatchers("/registerUser/**").permitAll()
 					.antMatchers("/secured/**").hasAnyRole("ADMIN")
-					.anyRequest().hasAnyRole("ADMIN", "USER")
 					.anyRequest().fullyAuthenticated()
 					.and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/dashboard").failureUrl("/login")
-					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true);
+					.and().logout().permitAll().logoutSuccessUrl("/login").permitAll().deleteCookies("JSESSIONID").invalidateHttpSession(true)
+					.and().sessionManagement().invalidSessionUrl("/login");
 		}
 
 	}
